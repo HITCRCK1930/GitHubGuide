@@ -1,0 +1,17 @@
+安装：
+https://zhuanlan.zhihu.com/p/612181449
+
+conda create -n torch python=3.8 
+activate torch
+
+30系显卡需要更高版本的CUDA对应的pytorch
+用以下方式替换！！！
+（https://blog.csdn.net/a563562675/article/details/121656894）
+pip3 install torch==1.10.0+cu113 torchvision==0.11.1+cu113 torchaudio==0.10.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+
+
+linux服务器可能需要：
+(https://blog.csdn.net/qq_40992227/article/details/123305773)
+apt-get install nvidia-modprobe
+
+pip install jupyter d2l

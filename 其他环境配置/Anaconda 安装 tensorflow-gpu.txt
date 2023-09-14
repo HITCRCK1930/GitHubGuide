@@ -1,0 +1,41 @@
+①新建环境并安装指定版本的TF-GPU与python
+conda config --append channels conda-forge
+conda create -n tf25py37 tensorflow-gpu==2.5.0 python==3.7 
+(RNN下推荐    conda create -n TF tensorflow-gpu==2.0.0 python==3.7 numpy=1.19   可在清华源直接下载但30系显卡可能不支持)
+
+注1：(复制清华源于C:\Users\87863\.condarc)
+channels:
+  - defaults
+show_channel_urls: true
+default_channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2
+custom_channels:
+  conda-forge: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  msys2: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  bioconda: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  menpo: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  pytorch: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  pytorch-lts: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+  simpleitk: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
+
+
+②进入环境
+conda activate tf25py37
+
+③检查是否安装了cudnn和cudatoolkit
+conda/pip install cudnn=7.6 codatoolkit=10.1
+
+④(可选)补充安装常用工具包/库
+pip install matplotlib
+
+pip install scikit-learn
+
+pip install pandas
+
+④
+退出环境
+conda deactivate
+删除环境
+conda uninstall -n TF --all

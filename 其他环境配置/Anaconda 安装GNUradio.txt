@@ -1,0 +1,115 @@
+主要安装参考：
+https://wiki.gnuradio.org/index.php?title=CondaInstall
+
+可选：conda install mamba
+
+①创建环境
+conda create -n gnuradio
+
+conda activate gnuradio
+
+conda config --env --add channels conda-forge
+conda config --env --set channel_priority strict
+
+②安装gnuradio
+conda install gnuradio
+（
+conda install gnuradio=3.8.2
+conda install gnuradio python=3.8
+conda upgrade --all
+推荐安装gnuradio=3.10.4.0版本
+）
+
+③安装使用OOT的相关包以构建OOT modules
+
+需要安装visio studio 2019及以上版本，若非2019版本，需要在单个组件额外安装"MSVC v142 - VS 2019 C++ x64/x86 build tools"
+注意：不要删除visio studio安装时的下载缓存！！！否则会找不到MSVC路径！！！
+
+conda install gnuradio-build-deps（这步跳过也可能能构建成功）
+
+conda install PyReadline！！！！！！！！！！！！！
+
+（
+gr_modtool newmod customModule
+gr_modtool rw customModule
+）
+
+会有报错
+ File "E:\Users\87863\anaconda3\envs\gnuradio\lib\site-packages\gnuradio\modtool\core\newmod.py", line 91, in run  s = filetext.read()
+UnicodeDecodeError: 'gbk' codec can't decode byte 0xe3 in position 16: illegal multibyte sequence
+问题：
+存在编码格式问题。
+解决方法：
+经尝试不同格式，分别在"E:\Users\87863\anaconda3\envs\gnuradio\lib\site-packages\gnuradio\modtool\core\newmod.py"90行和94行修改open函数
+90行：with open(f, 'r') as filetext:
+改为：with open(f, 'r', encoding='ISO-8859-1') as filetext:
+94行：with open(f, 'w') as filetext:
+改为：with open(f, 'w', encoding='ISO-8859-1') as filetext:
+改后无报错信息
+
+windows可能缺少的一些工具
+conda install git
+conda install doxygen
+conda install boost
+conda install nsis
+conda install cmake
+
+VS内nmake路径加入环境变量Path
+在此电脑->属性->高级系统设置->环境变量->系统变量->Path添加如下路径
+E:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.29.30133\bin\HostX64\x64
+（官网教程上的make指令均替换成nmake指令；或者也可以进入VS内路径，修改文件名nmake.exe为make.exe）
+
+随后可参考以下链接构建OOT模块
+https://wiki.gnuradio.org/index.php?title=Creating_Python_OOT_with_gr-modtool#Installation_Note
+
+其中cmake步骤需要使用如下命令
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" -DGR_PYTHON_DIR="%CONDA_PREFIX%\Lib\site-packages" ..
+注：
+	windows下cmake默认不生成makefile，“NMake Makefiles”表示使用生成能给vs内置的nmake使用的makefile；
+	后面的地址设置用于给后续nmake install提供安装地址%CONDA_PREFIX%表示anaconda中环境的安装位置，如“E:\Users\87863\anaconda3\envs\gnuradio_OOT”
+
+
+python构建OOT模块整体步骤如下
+gr_modtool newmod customModule
+
+cd gr-customModule
+
+gr_modtool add addSubSelect
+
+GNU Radio module name identified: customModule
+('sink', 'source', 'sync', 'decimator', 'interpolator', 'general', 'tagged_stream', 'hier', 'noblock')
+
+Enter block type: sync
+
+Language (python/cpp): python
+Language: Python
+Block/code identifier: addSubSelect
+
+Please specify the copyright holder: Your Name
+
+Enter valid argument list, including default arguments:
+
+selector=True
+
+Add Python QA code? [Y/n] n
+
+Adding file 'python/customModule/addSubSelect.py'...
+Adding file 'grc/customModule_addSubSelect.block.yml'...
+Editing grc/CMakeLists.txt...
+
+打开python/customModule/addSubSelect.py修改python文件（参考官网教程）
+打开grc/customModule_addSubSelect.block.yml修改yml文件（参考官网教程）
+保存关闭
+
+mkdir build
+
+cd build
+
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%CONDA_PREFIX%\Library" -DCMAKE_PREFIX_PATH="%CONDA_PREFIX%\Library" -DGR_PYTHON_DIR="%CONDA_PREFIX%\Lib\site-packages" ..
+
+nmake
+
+nmake install
+
+gnuradio-companion
+打开companion在右侧block library内即可看到OOT模块，模块名为customModule，包含addSubSelect块
